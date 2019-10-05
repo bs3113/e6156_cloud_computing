@@ -11,7 +11,12 @@ import json
 
 from CustomerInfo.Users import UsersService as UserService
 from Context.Context import Context
-
+# homework 1 import
+import DataAccess.DataAdaptor as data_adaptor
+from uuid import uuid4
+import pymysql.err
+from DataAccess.DataObject import DataException
+# homework 1 import end
 # Setup and use the simple, common Python logging framework. Send log messages to the console.
 # The application should get the log level out of the context. We will change later.
 #
@@ -145,7 +150,39 @@ def health_check():
     rsp_str = json.dumps(rsp_data)
     rsp = Response(rsp_str, status=200, content_type="application/json")
     return rsp
-
+# homework 1
+@application.route("/api/registrations", methods=["POST"])
+def registrations():
+    status = "PENDING"
+    id = str(uuid4())
+    last_name = request.form.get("last_name")
+    first_name = request.form.get("first_name")
+    email = request.form.get("email")
+    password = request.form.get("password")
+    new_usr = {
+        "last_name": last_name,
+        "first_name": first_name,
+        "id": id,
+        "email": email,
+        "status": status,
+        "password": password
+    }
+    try:
+        sql, args = data_adaptor.create_insert(table_name="users", row=new_usr)
+        res, data = data_adaptor.run_q(sql, args)
+        message = {
+            "result": res,
+            "data": data
+        }
+        response = Response(json.dumps(message),status = 200, content_type= "application/json")
+        return response
+    except pymysql.err.IntegrityError as ie:
+        if ie.args[0] == 1062:
+            raise (DataException(DataException.duplicate_key))
+        else:
+            raise DataException()
+    except Exception as e:
+        raise DataException()
 
 @application.route("/demo/<parameter>", methods=["GET", "POST"])
 def demo(parameter):
