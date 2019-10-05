@@ -155,10 +155,10 @@ def health_check():
 def registrations():
     status = "PENDING"
     id = str(uuid4())
-    last_name = request.form.get("last_name")
-    first_name = request.form.get("first_name")
-    email = request.form.get("email")
-    password = request.form.get("password")
+    last_name = request.json.get("last_name")
+    first_name = request.json.get("first_name")
+    email = request.json.get("email")
+    password = request.json.get("password")
     new_usr = {
         "last_name": last_name,
         "first_name": first_name,
