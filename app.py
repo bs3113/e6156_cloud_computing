@@ -238,7 +238,16 @@ def user_email(email):
                     rsp_status = 200
                     rsp_txt = "OK"
             elif inputs["method"] == "DELETE":
-                pass
+                rsp = user_service.delete_by_email(email)
+
+                if rsp is not None:
+                    rsp_data = rsp
+                    rsp_status = 200
+                    rsp_txt = "OK"
+                else:
+                    rsp_data = None
+                    rsp_status = 404
+                    rsp_txt = "NOT FOUND"
 
 
 
