@@ -226,9 +226,22 @@ def user_email(email):
                 rsp_status = 404
                 rsp_txt = "NOT FOUND"
         else:
-            rsp_data = None
-            rsp_status = 501
-            rsp_txt = "NOT IMPLEMENTED"
+            if inputs["method"] == "PUT":
+                json_body = inputs["body"]
+                rsp = user_service.update_user(email,json_body)
+
+                if rsp is not None:
+                    rsp_data = rsp
+                    rsp_status = 200
+                    rsp_txt = "OK"
+                else:
+                    rsp_data = None
+                    rsp_status = 404
+                    rsp_txt = "NOT FOUND"
+            elif inputs["method"] == "DELETE":
+                pass
+
+
 
         if rsp_data is not None:
             full_rsp = Response(json.dumps(rsp_data), status=rsp_status, content_type="application/json")

@@ -62,6 +62,28 @@ class UsersRDB(BaseDataObject):
             raise DataException()
 
         return result
+    @classmethod
+    def update_user(cls,email,user_info):
+
+        result = None
+
+        try:
+            template = {"email":email}
+            sql, args = data_adaptor.create_update(table_name="users", new_values=user_info,template = template)
+            res, data = data_adaptor.run_q(sql, args)
+            if res != 1:
+                result = None
+            else:
+                result = user_info['id']
+        except pymysql.err.IntegrityError as ie:
+            if ie.args[0] == 1062:
+                raise (DataException(DataException.duplicate_key))
+            else:
+                raise DataException()
+        except Exception as e:
+            raise DataException()
+
+        return result
 
 
 
