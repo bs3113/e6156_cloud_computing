@@ -74,7 +74,7 @@ class UsersRDB(BaseDataObject):
             if res != 1:
                 result = None
             else:
-                result = user_info['id']
+                result = user_info['email']
         except pymysql.err.IntegrityError as ie:
             if ie.args[0] == 1062:
                 raise (DataException(DataException.duplicate_key))

@@ -64,16 +64,10 @@ class UsersService(BaseService):
     @classmethod
     def update_user(cls,email,user_info):
 
-        for f in UsersService.required_create_fields:
-            v = user_info.get(f, None)
-            if v is None:
-                raise ServiceException(ServiceException.missing_field,
-                                       "Missing field = " + f)
-
-            if f == 'email':
-                if v.find('@') == -1:
-                    raise ServiceException(ServiceException.bad_data,
-                           "Email looks invalid: " + v)
+        v = user_info.get('email', None)
+        if v.find('@') == -1:
+            raise ServiceException(ServiceException.bad_data,
+                   "Email looks invalid: " + v)
 
         result = UsersRDB.update_user(email = email, user_info = user_info)
         return result
